@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ADHD-Founder Execution Assessment</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { 
+      max-width: 600px; 
+      margin: 0 auto; 
+      background: white; 
+      border-radius: 20px; 
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    .header h1 { font-size: 1.5rem; margin-bottom: 8px; }
+    .header p { opacity: 0.9; font-size: 0.9rem; }
+    .content { padding: 20px; }
+    .progress-bar { 
+      height: 6px; 
+      background: #e5e7eb; 
+      border-radius: 3px; 
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .progress-fill { 
+      height: 100%; 
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6); 
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .step-info { 
+      font-size: 0.85rem; 
+      color: #6b7280; 
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #1f2937;
+    }
+    .section-subtitle {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin-bottom: 20px;
+    }
+    .question-card {
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid #e5e7eb;
+    }
+    .question-text {
+      font-size: 0.95rem;
+      color: #374151;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+    .scale-buttons {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+    .scale-btn {
+      width: 48px;
+      height: 48px;
+      border: 2px solid #d1d5db;
+      border-radius: 10px;
+      background: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .scale-btn:hover { border-color: #3b82f6; background: #eff6ff; }
+    .scale-btn.selected { 
+      background: #3b82f6; 
+      color: white; 
+      border-color: #3b82f6;
+      transform: scale(1.05);
+    }
+    .scale-btn.green.selected { background: #10b981; border-color: #10b981; }
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-top: 6px;
+      padding: 0 4px;
+    }
+    .needs-card { margin-bottom: 20px; }
+    .needs-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .needs-label.blue { color: #3b82f6; }
+    .needs-label.green { color: #10b981; }
+    .btn-next {
+      width: 100%;
+      padding: 16px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 10px;
+    }
+    .btn-next.enabled {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+    }
+    .btn-next.enabled:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59,130,246,0.4); }
+    .btn-next.disabled { background: #e5e7eb; color: #9ca3af; cursor: not-allowed; }
+    .intro-box {
+      background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .intro-box ul { list-style: none; margin-top: 12px; }
+    .intro-box li { padding: 6px 0; font-size: 0.9rem; }
+    .intro-box li::before { content: "✓ "; color: #10b981; font-weight: bold; }
+    .warning-box {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+      color: #92400e;
+    }
+    .name-input {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      border: 2px solid #d1d5db;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .name-input:focus { outline: none; border-color: #3b82f6; }
+    .slider-container { margin-bottom: 20px; }
+    .slider {
+      width: 100%;
+      height: 8px;
+      -webkit-appearance: none;
+      background: #e5e7eb;
+      border-radius: 4px;
+      outline: none;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      background: #8b5cf6;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .slider-value {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #8b5cf6;
+      margin-top: 10px;
+    }
+    .number-input {
+      width: 80px;
+      padding: 12px;
+      font-size: 1.2rem;
+      text-align: center;
+      border: 2px solid #d1d5db;
+      border-radius: 10px;
+    }
+    .select-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .select-btn {
+      padding: 14px 10px;
+      border: 2px solid #d1d5db;
+      border-radius: 10px;
+      background: white;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .select-btn:hover { border-color: #8b5cf6; }
+    .select-btn.selected { background: #8b5cf6; color: white; border-color: #8b5cf6; }
+
+
+
+``
+/* Results */
+.results-header {
+  text-align: center;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+.quadrant-box {
+  background: #f0fdf4;
+  border: 2px solid #86efac;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.quadrant-label {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #166534;
+  margin-bottom: 8px;
+}
+.quadrant-desc { color: #15803d; font-size: 0.95rem; }
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 15px;
+}
+.stat { text-align: center; }
+.stat-value { font-size: 1.5rem; font-weight: 700; }
+.stat-label { font-size: 0.75rem; color: #6b7280; }
+.ef-grid { display: grid; gap: 10px; margin-bottom: 20px; }
+.ef-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 10px;
+}
+.ef-label { flex: 1; font-size: 0.85rem; font-weight: 500; }
+.ef-bar-bg {
+  width: 100px;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.ef-bar { height: 100%; border-radius: 4px; }
+.ef-value { width: 40px; text-align: right; font-weight: 600; font-size: 0.85rem; }
+.guardrails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.guardrail-tag {
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.output-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+.output-title {
+  font-weight: 700;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.copy-btn {
+  padding: 8px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.copy-btn:hover { background: #2563eb; }
+.output-box {
+  background: #1f2937;
+  color: #4ade80;
+  padding: 16px;
+  border-radius: 10px;
+  font-family: monospace;
+  font-size: 0.75rem;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.prompt-box {
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  padding: 16px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  max-height: 300px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+.hidden { display: none; }
